@@ -1,15 +1,6 @@
 /// <reference types="../CTAutocomplete" />
 
-/**
- * Filters events based on the file extension.
- * @param {java.nio.file.WatchEvent} event - The event to be filtered.
- * @returns {boolean}
- */
-function filter(event) {
-  // example - trigger on .js and .txt files
-  const extension = event.context().toFile().getName().split(".").pop();
-  return ["js", "txt"].includes(extension);
-}
+import onEvent from "./onEvent.js";
 
 const File = java.io.File;
 const FileSystems = java.nio.file.FileSystems;
@@ -40,14 +31,7 @@ new Thread(() => {
   while (go) {
     const key = watchService.take();
     for (let event of key.pollEvents()) {
-      if (!filter(event)) continue;
-      const fileName = event.context().getFileName();
-      if (event.kind() === StandardWatchEventKinds.ENTRY_MODIFY)
-        ChatLib.chat(`&cFile ${fileName} &chas been modified.`);
-      else if (event.kind() === StandardWatchEventKinds.ENTRY_CREATE)
-        ChatLib.chat(`&cFile ${fileName} &chas been created.`);
-      go = false;
-      ChatTriggers.loadCT();
+      onEvent(event);
     }
     key.reset();
   }
