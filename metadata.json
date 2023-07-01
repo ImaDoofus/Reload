@@ -1,0 +1,7 @@
+{
+  "name": "Reload",
+  "description": "Reload on save.",
+  "creator": "ImaDoofus",
+  "version": "0.1.0",
+  "entry": "index.js"
+}
